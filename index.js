@@ -2,7 +2,7 @@ const { sha256 } = require("js-sha256");
 const dotenv = require("dotenv").config();
 
 //kolejność ma znaczenie !!!! - https://www.dotpay.pl/developer/doc/api_payment/pl/index.html#document-03_dodatkowe_funkcjonalnosci
-const allowParams = [
+const sendParams = [
   "api_version",
   "lang",
   "id",
@@ -88,7 +88,39 @@ const allowParams = [
   "control1"
 ];
 
-function generateChk(params) {
+const getParams = [
+  "id",
+  "operation_number",
+  "operation_type",
+  "operation_status",
+  "operation_amount",
+  "operation_currency",
+  "operation_withdrawal_amount",
+  "operation_commission_amount",
+  "is_completed",
+  "operation_original_amount",
+  "operation_original_currency",
+  "operation_datetime",
+  "operation_related_number",
+  "control",
+  "description",
+  "email",
+  "p_info",
+  "p_email",
+  "credit_card_issuer_identification_number",
+  "credit_card_masked_number",
+  "credit_card_expiration_year",
+  "credit_card_expiration_month",
+  "credit_card_brand_codename",
+  "credit_card_brand_code",
+  "credit_card_unique_identifier",
+  "credit_card_id",
+  "channel",
+  "channel_country",
+  "geoip_country"
+];
+
+function generateHash(params, allowParams) {
   let stringToHash = process.env.DOTPAY_PIN;
 
   for (let i = 0; i < allowParams.length; i++) {
@@ -96,7 +128,6 @@ function generateChk(params) {
       stringToHash += params[allowParams[i]];
     }
   }
-  console.log(stringToHash);
   return sha256(stringToHash);
 }
 
@@ -105,7 +136,7 @@ function generateURL(params) {
   for (let key in params) {
     httpURL += `${key}=${params[key]}&`;
   }
-  httpURL += `chk=${generateChk(params)}`;
+  httpURL += `chk=${generateHash(params, sendParams)}`;
   return httpURL;
 }
 
@@ -125,4 +156,25 @@ console.log(
     buttontext: "Powrót",
     ignore_last_payment_channel: "1"
   })
+);
+
+console.log(
+  generateHash(
+    {
+      id: "793781",
+      operation_number: "M9982-39015",
+      operation_type: "payment",
+      operation_status: "completed",
+      operation_amount: "299",
+      operation_currency: "PLN",
+      operation_original_amount: "299",
+      operation_original_currency: "299",
+      operation_datetime: "2014-06-01 12:06:37",
+      control: "213123123",
+      firstname: "Marcin",
+      lastname: "Warzybok",
+      email: "marciwarzybok@outlook.com"
+    },
+    getParams
+  )
 );
