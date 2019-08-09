@@ -1,4 +1,5 @@
 const { sha256 } = require("js-sha256");
+const dotenv = require("dotenv").config();
 
 //kolejność ma znaczenie !!!! - https://www.dotpay.pl/developer/doc/api_payment/pl/index.html#document-03_dodatkowe_funkcjonalnosci
 const allowParams = [
@@ -84,7 +85,7 @@ const allowParams = [
   "currency1",
   "description1",
   "control1",
-  "control1",
+  "control1"
 ];
 
 function generateChk(params) {
@@ -115,7 +116,7 @@ console.log(
     description: "Test",
     lang: "pl",
     currency: "PLN",
-    url: `http://test.com`,
+    url: `http://localhost:5000/api/payments/check`,
     channel_groups: "K,T,M",
     firstname: "Marcin",
     lastname: "Warzybok",
